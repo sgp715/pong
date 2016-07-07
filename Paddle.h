@@ -4,6 +4,7 @@ class Paddle {
   
   int xPos;
   int yPositions[4];
+  int paddleLength;
 
   int yDirection;
 
@@ -12,6 +13,7 @@ class Paddle {
   char getShape();
   int getX();
   int * getYs();
+  int getPaddleLength();
   int getYDirection();
   void flipYDirection();
   void move();

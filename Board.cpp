@@ -24,9 +24,10 @@ Board::Board(){
 
   // place the ball and paddles initially
   placeCharacter(gameBall.getX(), gameBall.getY(), gameBall.getShape());
+
   int leftPaddleX = leftPaddle.getX();
   int * leftPaddleYs = leftPaddle.getYs();
-  for(int i = 0; i < 4; i++){
+  for(int i = 0; i < leftPaddle.getPaddleLength(); i++){
     placeCharacter(leftPaddleX, leftPaddleYs[i], leftPaddle.getShape());
   }
   
@@ -34,6 +35,24 @@ Board::Board(){
 
 void Board::moveLeftPaddle(){
 
+  // clear the old paddle
+  int oldX = leftPaddle.getX();
+  int * oldYs = leftPaddle.getYs();
+  for (int i = 0; i < leftPaddle.getPaddleLength(); i++){
+
+    placeCharacter(oldX, oldYs[i], ' ');
+  }
+
+  // move the paddle
+  leftPaddle.move();
+  
+  int x = leftPaddle.getX();
+  int * ys = leftPaddle.getYs();
+  // set the new paddle
+  for (int i = 0; i < leftPaddle.getPaddleLength(); i++){
+    placeCharacter(x, ys[i], leftPaddle.getShape());
+  }
+  
 }
 
 void Board::moveBall(){
@@ -60,10 +79,10 @@ void Board::moveBall(){
 void Board::play(){
 
   moveBall();
+
+  moveLeftPaddle();
   
-  //cout << "\n\n" << endl;
   cout << boardString << endl;
-  //cout << "\n\n" << endl;
   
 }
 
