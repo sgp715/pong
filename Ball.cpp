@@ -1,7 +1,9 @@
 #include <iostream>
 #include "Ball.h"
 
+
 using namespace std;
+
 
 Ball::Ball(){
 
@@ -50,4 +52,5 @@ void Ball::move(){
 
   xPos += xDirection;
   yPos += yDirection;
+
 }

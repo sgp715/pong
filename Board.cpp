@@ -8,42 +8,57 @@ Board::Board(){
 
   boardString = "";
 
-  string edge = "---------------------------------------------\n";
-  string width = "|                      |                    |\n";
+  string edge = "-----------------------------------------------\n";
+  string width = "|                                             |\n";
 
-  // create the board: width = 45, hieght = 20
+  // create the board: width = 46, hieght = 22
+  int height = 20;
   boardString.append(edge);
-  for (int i = 0; i < 20; i++){
+  for (int i = 0; i < height; i++){
     boardString.append(width);
   }  
   boardString.append(edge);
 
   boardWidth = width.length();
-  boardLength = 22;
+  boardLength = height + 2;
+
+  // place the board initially
+  placeCharacter(gameBall.getX(), gameBall.getY(), gameBall.getShape());
   
 }
 
+void Board::moveBall(){
 
-void Board::printBoard(){
+  int x = gameBall.getX();
+  int y = gameBall.getY();
 
+  // move the ball 
+  placeCharacter(x, y, ' '); 
 
+  if ((x == 1) || (x == boardWidth - 4)){
+    gameBall.flipXDirection();
+  }
+
+  if ((y == 1) || (y ==  boardLength - 3)){
+    gameBall.flipYDirection();
+  }
+
+  gameBall.move();
+  placeCharacter(gameBall.getX(), gameBall.getY(), gameBall.getShape()); 
+
+}
+
+void Board::play(){
+
+  moveBall();
+  
+  //cout << "\n\n" << endl;
   cout << boardString << endl;
+  //cout << "\n\n" << endl;
   
 }
 
 void Board::placeCharacter(int x, int y, char c){
-
-
-  // make sure we are adding within the board contraints
-  if ((x < 1) || (y < 1)){
-      cout << "adding to index less than board" << endl;
-      return;
-    }
-
-  if ((x > boardWidth - 4) || (y > boardLength - 3)){
-      cout << "adding to index greated than board" << endl;
-      return;
-    }
 
   // add the specified character into the board
   int position = x + boardWidth;
