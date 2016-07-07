@@ -22,9 +22,18 @@ Board::Board(){
   boardWidth = width.length();
   boardLength = height + 2;
 
-  // place the board initially
+  // place the ball and paddles initially
   placeCharacter(gameBall.getX(), gameBall.getY(), gameBall.getShape());
+  int leftPaddleX = leftPaddle.getX();
+  int * leftPaddleYs = leftPaddle.getYs();
+  for(int i = 0; i < 4; i++){
+    placeCharacter(leftPaddleX, leftPaddleYs[i], leftPaddle.getShape());
+  }
   
+}
+
+void Board::moveLeftPaddle(){
+
 }
 
 void Board::moveBall(){
