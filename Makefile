@@ -1,2 +1,2 @@
 Pong.o: 
-	g++ Pong.cpp Board.cpp Ball.cpp -o Pong
+	g++ Pong.cpp Board.cpp Ball.cpp Paddle.cpp -lncurses -o Pong
