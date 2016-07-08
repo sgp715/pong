@@ -57,6 +57,11 @@ int Paddle::getYDirection(){
   return yDirection;
 }
 
+void Paddle::setYDirection(int direction){
+
+  yDirection = direction;
+}
+
 void Paddle::flipYDirection(){
 
   yDirection = yDirection * -1;

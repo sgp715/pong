@@ -17,6 +17,7 @@ class Paddle {
   int * getYs();
   int getPaddleLength();
   int getYDirection();
+  void setYDirection(int);
   void flipYDirection();
   virtual void move();
   
