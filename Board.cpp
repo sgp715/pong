@@ -60,7 +60,7 @@ Board::Board(){
 
 
   int playerStartingY = 5;
-  int playerStartingX = 75;
+  int playerStartingX = 74;
   playerPaddle = Paddle(playerStartingX, playerStartingY);
 
   int playerPaddleX = playerPaddle.getX();
@@ -81,8 +81,14 @@ Board::~Board(){
 
 void Board::followBall(Paddle &paddle){
 
-  int direction = gameBall.getYDirection();
-  movePaddleDirection(paddle, direction);
+  int quarter = maxX / 4;
+  
+  if (gameBall.getX() < (quarter + 3)){
+    if (gameBall.getXDirection() == -1){
+      int direction = gameBall.getYDirection();
+      movePaddleDirection(paddle, direction);
+    }
+  }
 
 }
 
@@ -144,6 +150,14 @@ void Board::bouncePaddle(Paddle &paddle){
   int paddleX = paddle.getX();
   int * paddleYs = paddle.getYs();
 
+  
+  if ((paddleX + 1 == x) || (paddleX - 1 == x)){
+    if ((paddleYs[0] <= y) && paddleYs[4] >= y){
+      gameBall.flipXDirection();
+    }
+  }
+
+  
   if ((xDirection == 1) && (yDirection == 1)){
     if (paddleX - 1 == x){
       if (paddleYs[0] - 1 == y){
@@ -153,7 +167,7 @@ void Board::bouncePaddle(Paddle &paddle){
     }
   }
 
-  if ((xDirection == 1) && (yDirection == -1)){
+  else if ((xDirection == 1) && (yDirection == -1)){
     if (paddleX - 1 == x){
       if (paddleYs[0] + 1 == y){
 	gameBall.flipXDirection();
@@ -162,27 +176,21 @@ void Board::bouncePaddle(Paddle &paddle){
     }
   }
 
- if ((xDirection == -1) && (yDirection == 1)){
+  else if ((xDirection == -1) && (yDirection == 1)){
     if (paddleX + 1 == x){
-      if (paddleYs[0] - 1 == y){
+      if (paddleYs[4] - 1 == y){
 	gameBall.flipXDirection();
 	gameBall.flipYDirection();
       }
     }
   }
 
- if ((xDirection == -1) && (yDirection == -1)){
+  else if ((xDirection == -1) && (yDirection == -1)){
     if (paddleX + 1 == x){
-      if (paddleYs[0] + 1 == y){
+      if (paddleYs[4] + 1 == y){
 	gameBall.flipXDirection();
 	gameBall.flipYDirection();
       }
-    }
-  }
-
-  if ((paddleX + 1 == x) || (paddleX - 1 == x)){
-    if ((paddleYs[0] <= y) && paddleYs[4] >= y){
-      gameBall.flipXDirection();
     }
   }
 
@@ -220,16 +228,25 @@ void Board::play(){
   char c;
   while((c = getch()) != 'q'){
 
-    int speed = 100000;
-    usleep(speed);
+    int x = gameBall.getX();
+    if (x == maxX - 2){
+      move(12, 25);
+      printw("You lose. Better luck next time...");
+      break;
+    } else if (x == 1){
+      move(12, 25);
+      printw("Winner, winner chicken dinner!");
+      break;
+    }
 
+    // move the ball forward
     moveBall();
  
-    if (gameBall.getXDirection() == -1){
-      followBall(leftPaddle);
-    }
-    //movePaddle(leftPaddle);
-
+    // control the computer player
+    followBall(leftPaddle);
+    
+ 
+    // check if player is trying move their paddle
     int up = 3;
     int down = 2;
     if (c == up){
@@ -237,6 +254,9 @@ void Board::play(){
     } else if (c == down){
       movePaddleDirection(playerPaddle, 1);
     }
+
+    int speed = 100000;
+    usleep(speed);    
 
   }
   

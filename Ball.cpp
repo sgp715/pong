@@ -1,4 +1,5 @@
 #include <iostream>
+#include <stdlib.h>
 #include "Ball.h"
 
 
@@ -12,8 +13,9 @@ Ball::Ball(){
 
 
   // setting it in motion
-  xPos = 10;
-  yPos = 10;
+  int val = rand() % 20;
+  xPos = val + 10;
+  yPos = val + 10;
   xDirection = 1;
   yDirection = 1;
 
