@@ -21,6 +21,12 @@ Board::Board(){
   noecho();
   curs_set(0);
 
+
+  // add some coloring
+  start_color();			/* Start color 			*/
+  init_pair(1, COLOR_GREEN, COLOR_BLACK);
+  attron(COLOR_PAIR(1));
+
   // determine the screen size
   getmaxyx(stdscr, maxY, maxX); 
   
@@ -72,11 +78,20 @@ Board::~Board(){
   endwin();
 }
 
-void Board::movePlayerPaddle(int direction){
+
+void Board::followBall(Paddle &paddle){
+
+  int direction = gameBall.getYDirection();
+  movePaddleDirection(paddle, direction);
+
+}
+
+
+void Board::movePaddleDirection(Paddle &paddle, int direction){
   
   // if we are at the edge, do nothing
-  int x = playerPaddle.getX();
-  int * ys = playerPaddle.getYs();
+  int x = paddle.getX();
+  int * ys = paddle.getYs();
   if ((ys[0] == 1) && (direction == -1)){
       return;
   }
@@ -86,10 +101,11 @@ void Board::movePlayerPaddle(int direction){
   }
 
   // otherwise set the direction and move
-  playerPaddle.setYDirection(direction);
-  movePaddle(playerPaddle);
+  paddle.setYDirection(direction);
+  movePaddle(paddle);
 
 }
+
 
 void Board::movePaddle(Paddle &paddle){
 
@@ -117,6 +133,61 @@ void Board::movePaddle(Paddle &paddle){
   
 }
 
+void Board::bouncePaddle(Paddle &paddle){
+
+  int xDirection = gameBall.getXDirection();
+  int yDirection = gameBall.getYDirection();
+
+  int x = gameBall.getX();
+  int y = gameBall.getY();
+
+  int paddleX = paddle.getX();
+  int * paddleYs = paddle.getYs();
+
+  if ((xDirection == 1) && (yDirection == 1)){
+    if (paddleX - 1 == x){
+      if (paddleYs[0] - 1 == y){
+	gameBall.flipXDirection();
+	gameBall.flipYDirection();
+      }
+    }
+  }
+
+  if ((xDirection == 1) && (yDirection == -1)){
+    if (paddleX - 1 == x){
+      if (paddleYs[0] + 1 == y){
+	gameBall.flipXDirection();
+	gameBall.flipYDirection();
+      }
+    }
+  }
+
+ if ((xDirection == -1) && (yDirection == 1)){
+    if (paddleX + 1 == x){
+      if (paddleYs[0] - 1 == y){
+	gameBall.flipXDirection();
+	gameBall.flipYDirection();
+      }
+    }
+  }
+
+ if ((xDirection == -1) && (yDirection == -1)){
+    if (paddleX + 1 == x){
+      if (paddleYs[0] + 1 == y){
+	gameBall.flipXDirection();
+	gameBall.flipYDirection();
+      }
+    }
+  }
+
+  if ((paddleX + 1 == x) || (paddleX - 1 == x)){
+    if ((paddleYs[0] <= y) && paddleYs[4] >= y){
+      gameBall.flipXDirection();
+    }
+  }
+
+}
+
 void Board::moveBall(){
 
   int x = gameBall.getX();
@@ -135,23 +206,9 @@ void Board::moveBall(){
     gameBall.flipYDirection();
   }
 
-  int leftPaddleX = leftPaddle.getX();
-  int * leftPaddleYs = leftPaddle.getYs();
-  int playerPaddleX = playerPaddle.getX();
-  int * playerPaddleYs = playerPaddle.getYs();
-
-  if ((playerPaddleX + 1 == x) || (playerPaddleX - 1 == x)){
-    if ((playerPaddleYs[0] <= y) && playerPaddleYs[4] >= y){
-      gameBall.flipXDirection();
-    }
-  }
-
-  if ((playerPaddleX + 1 == x) || (playerPaddleX - 1 == x)){
-   if ((playerPaddleYs[0] <= y) && playerPaddleYs[4] >= y){
-      gameBall.flipXDirection();
-    }
-  }
-
+  // see if we have to bounce of either paddle
+  bouncePaddle(playerPaddle);
+  bouncePaddle(leftPaddle);
 
   gameBall.move();
   placeCharacter(gameBall.getX(), gameBall.getY(), gameBall.getShape());
@@ -167,14 +224,18 @@ void Board::play(){
     usleep(speed);
 
     moveBall();
-    movePaddle(leftPaddle);
+ 
+    if (gameBall.getXDirection() == -1){
+      followBall(leftPaddle);
+    }
+    //movePaddle(leftPaddle);
 
     int up = 3;
     int down = 2;
     if (c == up){
-      movePlayerPaddle(-1);
+      movePaddleDirection(playerPaddle, -1);
     } else if (c == down){
-      movePlayerPaddle(1);
+      movePaddleDirection(playerPaddle, 1);
     }
 
   }

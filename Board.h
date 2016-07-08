@@ -23,7 +23,9 @@ class Board{
   ~Board();
   void moveBall();
   void movePaddle(Paddle &paddle);
-  void movePlayerPaddle(int);
+  void movePaddleDirection(Paddle &, int);
+  void followBall(Paddle &);
+  void bouncePaddle(Paddle &paddle);
   void play();
   void placeCharacter(int x, int y, char c);
 
