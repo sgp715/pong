@@ -14,8 +14,8 @@ Ball::Ball(){
 
   // setting it in motion
   int val = rand() % 20;
-  xPos = val + 10;
-  yPos = val + 10;
+  xPos = 10;
+  yPos = 10;
   xDirection = 1;
   yDirection = 1;
 

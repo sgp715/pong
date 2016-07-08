@@ -157,6 +157,13 @@ void Board::bouncePaddle(Paddle &paddle){
     }
   }
 
+
+  if (paddleX == x){
+    if ((paddleYs[0] - 1 == y) || (paddleYs[4] + 1 == y)){
+      gameBall.flipYDirection();
+    }
+  }
+
   
   if ((xDirection == 1) && (yDirection == 1)){
     if (paddleX - 1 == x){
@@ -169,7 +176,7 @@ void Board::bouncePaddle(Paddle &paddle){
 
   else if ((xDirection == 1) && (yDirection == -1)){
     if (paddleX - 1 == x){
-      if (paddleYs[0] + 1 == y){
+      if (paddleYs[4] + 1 == y){
 	gameBall.flipXDirection();
 	gameBall.flipYDirection();
       }
@@ -178,7 +185,7 @@ void Board::bouncePaddle(Paddle &paddle){
 
   else if ((xDirection == -1) && (yDirection == 1)){
     if (paddleX + 1 == x){
-      if (paddleYs[4] - 1 == y){
+      if (paddleYs[0] - 1 == y){
 	gameBall.flipXDirection();
 	gameBall.flipYDirection();
       }
@@ -192,7 +199,7 @@ void Board::bouncePaddle(Paddle &paddle){
 	gameBall.flipYDirection();
       }
     }
-  }
+  }  
 
 }
 
@@ -228,6 +235,9 @@ void Board::play(){
   char c;
   while((c = getch()) != 'q'){
 
+
+    // if we have hit either wall the game is over
+    // declare a winner and move on
     int x = gameBall.getX();
     if (x == maxX - 2){
       move(12, 25);
@@ -238,13 +248,9 @@ void Board::play(){
       printw("Winner, winner chicken dinner!");
       break;
     }
-
-    // move the ball forward
-    moveBall();
- 
+    
     // control the computer player
     followBall(leftPaddle);
-    
  
     // check if player is trying move their paddle
     int up = 3;
@@ -257,6 +263,10 @@ void Board::play(){
 
     int speed = 100000;
     usleep(speed);    
+   
+    // move the ball forward
+    moveBall();
+ 
 
   }
   
