@@ -16,6 +16,8 @@ Ball::Ball(){
   int val = rand() % 20;
   xPos = 10;
   yPos = 10;
+  oldX = xPos;
+  oldY = yPos;
   xDirection = 1;
   yDirection = 1;
 
@@ -31,6 +33,16 @@ int Ball::getX(){
 
 int Ball::getY(){
   return yPos;
+}
+
+int Ball::getOldX(){
+
+  return oldX;
+}
+
+int Ball::getOldY(){
+
+  return oldY;
 }
 
 int Ball::getXDirection(){
@@ -52,6 +64,8 @@ void Ball::flipYDirection(){
 
 void Ball::move(){
 
+  oldX = xPos;
+  oldY = yPos;
   xPos += xDirection;
   yPos += yDirection;
 

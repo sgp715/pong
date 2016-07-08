@@ -4,6 +4,8 @@ class Ball {
 
   int xPos;
   int yPos;
+  int oldX;
+  int oldY;
   int xDirection;
   int yDirection;
   
@@ -11,6 +13,8 @@ class Ball {
   char getShape();
   int getX();
   int getY();
+  int getOldX();
+  int getOldY();
   int getXDirection();
   int getYDirection();
   void move();

@@ -249,6 +249,9 @@ void Board::play(){
       break;
     }
     
+    // move the ball forward
+    moveBall();
+
     // control the computer player
     followBall(leftPaddle);
  
@@ -263,10 +266,6 @@ void Board::play(){
 
     int speed = 100000;
     usleep(speed);    
-   
-    // move the ball forward
-    moveBall();
- 
 
   }
   
