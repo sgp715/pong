@@ -5,15 +5,29 @@ using namespace std;
 
 Paddle::Paddle(){
 
-  shape = '#';
+ shape = '#';
 
   xPos = 5;
-  yPositions[1] = 1;
-  yPositions[2] = 2;
-  yPositions[3] = 3;
-  yPositions[4] = 4;
-  paddleLength = 4;
-  
+  paddleLength = 5;
+  for (int i = 0; i < paddleLength; i++){
+    yPositions[i] = i + 2;
+  }
+   
+  yDirection = 1;
+
+
+}
+
+Paddle::Paddle(int startingX, int startingY){
+
+  shape = '#';
+
+  xPos = startingX;
+  paddleLength = 5;
+  for (int i = 0; i < paddleLength; i++){
+    yPositions[i] = startingY + i;
+  }
+   
   yDirection = 1;
 
 }
@@ -56,3 +70,14 @@ void Paddle::move(){
 
 }
 
+/*
+PlayerPaddle::PlayerPaddle(){
+
+  
+}*/
+
+/*
+ComputerPaddle::ComputerPaddle(){
+
+  
+}*/

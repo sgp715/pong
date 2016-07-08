@@ -1,22 +1,37 @@
 class Paddle {
 
+ protected:
   char shape;
   
   int xPos;
-  int yPositions[4];
+  int yPositions[5];
   int paddleLength;
 
   int yDirection;
 
  public:
   Paddle();
+  Paddle(int startingX, int startingY);
   char getShape();
   int getX();
   int * getYs();
   int getPaddleLength();
   int getYDirection();
   void flipYDirection();
-  void move();
+  virtual void move();
   
 
 };
+
+
+class PlayerPaddle: public Paddle {
+
+  
+
+};
+
+
+class ComputerPaddle: public Paddle {
+
+};
+

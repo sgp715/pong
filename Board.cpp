@@ -1,5 +1,6 @@
 #include <iostream>
 #include <string>
+#include <unistd.h>
 #include "Board.h"
 
 using namespace std;
@@ -11,26 +12,52 @@ Board::Board(){
   string edge = "-----------------------------------------------\n";
   string width = "|                                             |\n";
 
-  // create the board: width = 46, hieght = 22
-  int height = 20;
-  boardString.append(edge);
-  for (int i = 0; i < height; i++){
-    boardString.append(width);
-  }  
-  boardString.append(edge);
+  // initialize the screen
+  initscr();
 
-  boardWidth = width.length();
-  boardLength = height + 2;
+  // set some basic settings
+  nodelay(stdscr, true);
+  keypad(stdscr, true);
+  noecho();
+  curs_set(0);
 
-  // place the ball and paddles initially
+  // determine the screen size
+  getmaxyx(stdscr, maxY, maxX); 
+  
+  for (int i = 0; i < maxX; i++){
+    addch('-');
+  }
+
+  for (int i = 0; i < maxY-2; i++){
+    addch('|');
+    for (int i = 0; i < maxX - 2; i++){
+      addch(' ');
+    }
+    addch('|');
+  }
+
+  for (int i = 0; i < maxX; i++){
+    addch('-');
+  }
+
   placeCharacter(gameBall.getX(), gameBall.getY(), gameBall.getShape());
 
+  int startingY = 5;
+  int startingX = 5;
+
+  leftPaddle = Paddle(startingX, startingY);
   int leftPaddleX = leftPaddle.getX();
   int * leftPaddleYs = leftPaddle.getYs();
   for(int i = 0; i < leftPaddle.getPaddleLength(); i++){
     placeCharacter(leftPaddleX, leftPaddleYs[i], leftPaddle.getShape());
   }
-  
+}
+
+Board::~Board(){
+
+  nodelay(stdscr, false);
+  getch();
+  endwin();
 }
 
 void Board::moveLeftPaddle(){
@@ -39,9 +66,8 @@ void Board::moveLeftPaddle(){
   int oldX = leftPaddle.getX();
   int * oldYs = leftPaddle.getYs();
   for (int i = 0; i < leftPaddle.getPaddleLength(); i++){
-
     placeCharacter(oldX, oldYs[i], ' ');
-  }
+    }
 
   // move the paddle
   leftPaddle.move();
@@ -51,6 +77,11 @@ void Board::moveLeftPaddle(){
   // set the new paddle
   for (int i = 0; i < leftPaddle.getPaddleLength(); i++){
     placeCharacter(x, ys[i], leftPaddle.getShape());
+    }
+
+  // turn the paddle around
+  if ((ys[0] == 1) || (ys[4] == maxY - 2)){
+    leftPaddle.flipYDirection();
   }
   
 }
@@ -63,35 +94,40 @@ void Board::moveBall(){
   // move the ball 
   placeCharacter(x, y, ' '); 
 
-  if ((x == 1) || (x == boardWidth - 4)){
+  if ((x == 1) || (x == maxX - 2)){
     gameBall.flipXDirection();
   }
 
-  if ((y == 1) || (y ==  boardLength - 3)){
+  if ((y == 1) || (y ==  maxY - 2)){
     gameBall.flipYDirection();
   }
 
   gameBall.move();
-  placeCharacter(gameBall.getX(), gameBall.getY(), gameBall.getShape()); 
+  
+  placeCharacter(gameBall.getX(), gameBall.getY(), gameBall.getShape());
 
 }
 
 void Board::play(){
 
-  moveBall();
-
-  moveLeftPaddle();
   
-  cout << boardString << endl;
+  while(getch() != 'q'){
+
+    int speed = 100000;
+    usleep(speed);
+
+    moveBall();
+    moveLeftPaddle();
+
+  }
   
 }
 
 void Board::placeCharacter(int x, int y, char c){
 
-  // add the specified character into the board
-  int position = x + boardWidth;
-  position += (y * boardWidth);
-  boardString[position] = c;
+  // add the specified character onto the board
+  move(y, x);
+  addch(c);
 
 }
 
